@@ -2,6 +2,8 @@
 
 SpotFuck-Web is an open-source **private** music player website. Each user has a private library, and tracks are only accessible while authenticated.
 
+Main Page: https://spotfuck.netlify.app/
+
 ## Features
 - User authentication
 - Private per-user music library
