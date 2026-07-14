@@ -573,7 +573,7 @@
                         ...track,
                         source: 'jamendo',
                         audio: track.audio,
-                        image: track.image,
+                        image: track.image || track.album_image || `https://via.placeholder.com/300/dc2626/ffffff?text=${encodeURIComponent(track.name.substring(0, 2))}`,
                         name: track.name,
                         artist_name: track.artist_name,
                         duration: track.duration
@@ -732,7 +732,7 @@
                         ...track,
                         source: 'jamendo',
                         audio: track.audio,
-                        image: track.image,
+                        image: track.image || track.album_image || `https://via.placeholder.com/150/dc2626/ffffff?text=${encodeURIComponent(track.name.substring(0, 2))}`,
                         name: track.name,
                         artist_name: track.artist_name,
                         duration: track.duration
@@ -797,7 +797,7 @@
                         videoId: item.id.videoId,
                         name: item.snippet.title,
                         artist_name: item.snippet.channelTitle,
-                        image: item.snippet.thumbnails.medium?.url || item.snippet.thumbnails.default?.url,
+                        image: item.snippet.thumbnails.high?.url || item.snippet.thumbnails.medium?.url || item.snippet.thumbnails.default?.url || `https://via.placeholder.com/150/dc2626/ffffff?text=${encodeURIComponent(item.snippet.title.substring(0, 2))}`,
                         duration: 0 // Will be fetched when needed
                     }));
                     renderTrackList();
@@ -866,7 +866,7 @@
                         spotifyUrl: track.external_urls.spotify,
                         name: track.name,
                         artist_name: track.artists.map(a => a.name).join(', '),
-                        image: track.album.images[0]?.url,
+                        image: track.album.images.find(img => img.height >= 300)?.url || track.album.images[0]?.url || `https://via.placeholder.com/150/dc2626/ffffff?text=${encodeURIComponent(track.name.substring(0, 2))}`,
                         duration: track.duration_ms / 1000,
                         preview_url: track.preview_url
                     }));
@@ -890,7 +890,7 @@
                             spotifyUrl: track.external_urls.spotify,
                             name: track.name,
                             artist_name: track.artists.map(a => a.name).join(', '),
-                            image: track.album.images[0]?.url,
+                            image: track.album.images.find(img => img.height >= 300)?.url || track.album.images[0]?.url || `https://via.placeholder.com/150/dc2626/ffffff?text=${encodeURIComponent(track.name.substring(0, 2))}`,
                             duration: track.duration_ms / 1000,
                             preview_url: track.preview_url
                         }));
@@ -912,12 +912,13 @@
                     const albumData = await albumResponse.json();
                     
                     if (albumData.items && albumData.items.length > 0) {
+                        const albumImage = data.albums.items[0].images.find(img => img.height >= 300)?.url || data.albums.items[0].images[0]?.url;
                         tracks = albumData.items.map(track => ({
                             source: 'spotify',
                             spotifyUrl: track.external_urls.spotify,
                             name: track.name,
                             artist_name: data.albums.items[0].artists.map(a => a.name).join(', '),
-                            image: data.albums.items[0].images[0]?.url,
+                            image: albumImage || `https://via.placeholder.com/150/dc2626/ffffff?text=${encodeURIComponent(track.name.substring(0, 2))}`,
                             duration: track.duration_ms / 1000,
                             preview_url: track.preview_url
                         }));
@@ -1001,7 +1002,7 @@
                                 source: 'audius',
                                 id: track.id,
                                 audio: `https://${host}/v1/tracks/${track.id}/stream`,
-                                image: track.artwork && track.artwork['150x150'] ? track.artwork['150x150'] : 'https://via.placeholder.com/150',
+                                image: track.artwork && (track.artwork['480x480'] || track.artwork['150x150']) ? (track.artwork['480x480'] || track.artwork['150x150']) : `https://via.placeholder.com/150/dc2626/ffffff?text=${encodeURIComponent(track.title.substring(0, 2))}`,
                                 name: track.title,
                                 artist_name: track.user.name,
                                 duration: track.duration
@@ -1025,7 +1026,7 @@
                             source: 'audius',
                             id: track.id,
                             audio: `https://${host}/v1/tracks/${track.id}/stream`,
-                            image: track.artwork && track.artwork['150x150'] ? track.artwork['150x150'] : 'https://via.placeholder.com/150',
+                            image: track.artwork && (track.artwork['480x480'] || track.artwork['150x150']) ? (track.artwork['480x480'] || track.artwork['150x150']) : `https://via.placeholder.com/150/dc2626/ffffff?text=${encodeURIComponent(track.title.substring(0, 2))}`,
                             name: track.title,
                             artist_name: track.user.name,
                             duration: track.duration
